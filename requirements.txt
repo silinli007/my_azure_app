@@ -1,0 +1,6 @@
+flask
+pandas
+flask-sqlalchemy
+apscheduler
+flask-mail
+matplotlib
