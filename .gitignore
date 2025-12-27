@@ -1,0 +1,45 @@
+cat > .gitignore << 'EOF'
+# 以下是为你项目定制的 .gitignore 内容
+# Python 编译缓存和虚拟环境
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# 日志文件
+*.log
+logs/
+
+# 本地开发/实例文件 (非常重要！)
+instance/
+# 如果你的 instance 文件夹里放的是本地测试数据库（如 .db 文件），上一行已忽略整个目录。
+# 如果 instance 文件夹里有重要配置，请移除上一行，改为忽略具体文件，例如：
+# instance/*.db
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# IDE 配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 临时文件和上传缓存
+temp/
+tmp/
+*.tmp
+*.temp
+
+# 你自己创建的临时脚本（如果有的话）
+temp_file.py
+
+# Azure 应用服务可能生成的诊断文件（可选）
+.python_packages/
+EOF
