@@ -4,3 +4,4 @@ flask-sqlalchemy
 apscheduler
 flask-mail
 matplotlib
+gunicorn==21.2.0

@@ -1,0 +1,629 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动化选品分析系统 - 优化版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Microsoft YaHei', Arial, sans-serif; 
+            background: #f5f6fa;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+        }
+        .header { 
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { 
+            font-size: 2.5em; 
+            margin-bottom: 5px;
+        }
+        .header p {
+            opacity: 0.9;
+        }
+        .user-info {
+            text-align: right;
+        }
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin: 20px 40px;
+        }
+        .automation-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .stats-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+        }
+        .automation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .automation-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 6px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        .automation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .card-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-card.warning {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        .stat-card.success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        .reports-section {
+            margin-top: 30px;
+        }
+        .report-item {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .system-status {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .status-item {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .task-list {
+            margin-top: 20px;
+        }
+        .task-item {
+            background: #34495e;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>🤖 自动化选品分析系统 - 优化版</h1>
+                <p>智能报告 · 定时任务 · 邮件通知 · 实时监控</p>
+            </div>
+            <div class="user-info">
+                欢迎, <strong>{{ username }}</strong>! 
+                <a href="{{ url_for('logout') }}">退出登录</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="automation-panel">
+                <div class="panel-header">
+                    <h2>🔄 自动化任务控制</h2>
+                    <div>
+                        <button class="btn btn-success" onclick="generateReport()">📊 立即生成报告</button>
+                        <button class="btn" onclick="testEmail()">📧 测试邮件发送</button>
+                    </div>
+                </div>
+
+                <div class="automation-grid">
+                    <div class="automation-card">
+                        <div class="card-header">
+                            <div class="card-icon">📅</div>
+                            <h3>定时报告生成</h3>
+                        </div>
+                        <p>系统将在每天上午9点自动生成选品分析报告，并通过邮件发送给您。</p>
+                        <div class="status-item">
+                            <span>任务状态:</span>
+                            <span style="color: #2ecc71;">运行中</span>
+                        </div>
+                    </div>
+
+                    <div class="automation-card">
+                        <div class="card-header">
+                            <div class="card-icon">📧</div>
+                            <h3>邮件通知系统</h3>
+                        </div>
+                        <p>自动将重要分析结果和报告发送到您的注册邮箱，确保您不错过任何商机。</p>
+                        <div class="status-item">
+                            <span>当前模式:</span>
+                            <span id="mailMode">模拟发送</span>
+                        </div>
+                    </div>
+
+                    <div class="automation-card">
+                        <div class="card-header">
+                            <div class="card-icon">⚡</div>
+                            <h3>后台任务处理</h3>
+                        </div>
+                        <p>大数据分析和报告生成在后台异步执行，不会影响您的正常使用体验。</p>
+                        <div class="status-item">
+                            <span>工作线程:</span>
+                            <span id="workerCount">4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="system-status">
+                    <h3>🖥️ 系统状态监控</h3>
+                    <div id="systemStatus">
+                        <!-- 系统状态动态加载 -->
+                    </div>
+                    <div class="task-list" id="taskList">
+                        <!-- 定时任务列表动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 产品列表部分 - 已添加CSV导入功能 -->
+                <div class="reports-section">
+                    <h3>📦 产品列表</h3>
+                    
+                    <!-- 添加导入功能 -->
+                    <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                        <input type="file" id="csvFile" accept=".csv" style="display: none;">
+                        <button class="btn btn-success" onclick="document.getElementById('csvFile').click()">
+                            📁 导入CSV文件
+                        </button>
+                        <button class="btn btn-danger" onclick="clearProducts()">
+                            🗑️ 清空产品
+                        </button>
+                        <button class="btn" onclick="loadProductList()">
+                            🔄 刷新列表
+                        </button>
+                    </div>
+                    
+                    <div id="importStatus" style="margin-bottom: 10px;"></div>
+                    
+                    <div id="productList" style="background: white; border-radius: 8px; padding: 20px; margin-top: 15px;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #f8f9fa;">
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">产品名称</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">类别</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">价格</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">月销量</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">产品链接</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody">
+                                <!-- 产品数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="reports-section">
+                    <h3>📋 最近生成的报告</h3>
+                    <div id="reportsList">
+                        <!-- 报告列表动态加载 -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <div class="panel-header">
+                    <h2>📈 实时数据概览</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalProducts">0</div>
+                        <div class="stat-label">总产品数</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-number" id="avgRoi">0%</div>
+                        <div class="stat-label">平均ROI</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRevenue">$0</div>
+                        <div class="stat-label">月收益潜力</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-number" id="highValueCount">0</div>
+                        <div class="stat-label">高价值产品</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3>🏆 最佳表现产品</h3>
+                    <div id="topProduct" style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin-top: 10px;">
+                        加载中...
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3>📊 性能指标</h3>
+                    <div id="performanceMetrics" style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin-top: 10px;">
+                        加载中...
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn" onclick="refreshStats()" style="width: 100%;">🔄 刷新数据</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStatus();
+            loadReports();
+            loadStatsOverview();
+            loadProductList();
+            setInterval(loadSystemStatus, 30000); // 每30秒刷新系统状态
+            setInterval(loadReports, 60000); // 每60秒刷新报告列表
+        });
+
+        // 加载系统状态
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch('/api/system/status');
+                const data = await response.json();
+                
+                let statusHtml = `
+                    <div class="status-item">
+                        <span>系统状态:</span>
+                        <span style="color: #2ecc71;">${data.status}</span>
+                    </div>
+                    <div class="status-item">
+                        <span>任务调度器:</span>
+                        <span>${data.scheduler_type}</span>
+                    </div>
+                    <div class="status-item">
+                        <span>邮件服务:</span>
+                        <span>${data.mail_service}</span>
+                    </div>
+                    <div class="status-item">
+                        <span>服务器时间:</span>
+                        <span>${data.server_time}</span>
+                    </div>
+                `;
+                
+                document.getElementById('systemStatus').innerHTML = statusHtml;
+                
+                // 更新邮件模式显示
+                document.getElementById('mailMode').textContent = data.mail_service;
+                
+                // 显示定时任务列表
+                if (data.scheduled_jobs && data.scheduled_jobs.length > 0) {
+                    let taskHtml = '<h4>📅 定时任务列表</h4>';
+                    data.scheduled_jobs.forEach(job => {
+                        taskHtml += `
+                            <div class="task-item">
+                                <span>${job.name || job.id}</span>
+                                <span>下次运行: ${job.next_run || '未知'}</span>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('taskList').innerHTML = taskHtml;
+                }
+                
+            } catch (error) {
+                console.error('加载系统状态失败:', error);
+            }
+        }
+
+        // 加载报告列表
+        async function loadReports() {
+            try {
+                const response = await fetch('/api/reports');
+                const data = await response.json();
+                
+                let reportsHtml = '';
+                if (data.reports && data.reports.length > 0) {
+                    data.reports.forEach(report => {
+                        reportsHtml += `
+                            <div class="report-item">
+                                <div>
+                                    <strong>${report.report_type}报告</strong>
+                                    <p>生成时间: ${report.generated_at}</p>
+                                    <p>${report.summary}</p>
+                                </div>
+                                <div>
+                                    ${report.sent_via_email ? '📧 已发送邮件' : '⏳ 处理中'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    reportsHtml = '<p>暂无报告，点击上方按钮生成第一个报告</p>';
+                }
+                
+                document.getElementById('reportsList').innerHTML = reportsHtml;
+                
+            } catch (error) {
+                console.error('加载报告列表失败:', error);
+            }
+        }
+
+        // 加载数据概览
+        async function loadStatsOverview() {
+            try {
+                const response = await fetch('/api/products/overview');
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error('加载数据概览失败:', data.error);
+                    return;
+                }
+                
+                // 更新基础统计
+                document.getElementById('totalProducts').textContent = data.basic_stats.total_products;
+                document.getElementById('avgRoi').textContent = data.basic_stats.avg_roi + '%';
+                document.getElementById('totalRevenue').textContent = '$' + data.basic_stats.total_revenue.toLocaleString();
+                document.getElementById('highValueCount').textContent = data.basic_stats.high_value_count;
+                
+                // 更新最佳产品
+                document.getElementById('topProduct').innerHTML = `
+                    <strong>${data.performance_metrics.top_product}</strong>
+                    <p style="margin-top: 5px; color: #666;">当前最佳ROI产品</p>
+                `;
+                
+                // 更新性能指标
+                document.getElementById('performanceMetrics').innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <strong>利润潜力</strong>
+                            <p>$${data.performance_metrics.profit_potential.toFixed(2)}</p>
+                        </div>
+                        <div>
+                            <strong>销售速度</strong>
+                            <p>${data.performance_metrics.sales_velocity}</p>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('加载数据概览失败:', error);
+            }
+        }
+
+        // 加载产品列表 - 新增函数
+        async function loadProductList() {
+            try {
+                const response = await fetch('/api/products');
+                const data = await response.json();
+                
+                let productHtml = '';
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach(product => {
+                        productHtml += `
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${product.name}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${product.category}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">¥${product.current_price}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${product.monthly_sales}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                    ${product.product_url ? 
+                                        `<a href="${product.product_url}" target="_blank" style="color: #007bff; text-decoration: none;">🔗 查看产品</a>` : 
+                                        '<span style="color: #6c757d;">-</span>'}
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    productHtml = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #6c757d;">暂无产品数据</td></tr>';
+                }
+                
+                document.getElementById('productTableBody').innerHTML = productHtml;
+            } catch (error) {
+                console.error('加载产品列表失败:', error);
+                document.getElementById('productTableBody').innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #dc3545;">加载失败</td></tr>';
+            }
+        }
+
+        // CSV文件导入功能
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                importCSV(file);
+            }
+        });
+
+        async function importCSV(file) {
+            const statusDiv = document.getElementById('importStatus');
+            statusDiv.innerHTML = '<div style="color: #007bff;">🔄 正在导入CSV文件...</div>';
+            
+            const formData = new FormData();
+            formData.append('csv_file', file);
+            
+            try {
+                const response = await fetch('/api/import-csv', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusDiv.innerHTML = `<div style="color: #28a745;">✅ ${result.message}</div>`;
+                    // 导入成功后刷新产品列表
+                    setTimeout(() => {
+                        loadProductList();
+                        loadStatsOverview();
+                    }, 1000);
+                } else {
+                    statusDiv.innerHTML = `<div style="color: #dc3545;">❌ ${result.message}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div style="color: #dc3545;">❌ 导入失败: ${error}</div>`;
+            }
+            
+            // 清空文件输入，允许重复选择同一文件
+            document.getElementById('csvFile').value = '';
+        }
+
+        // 清空产品功能
+        async function clearProducts() {
+            if (!confirm('确定要清空所有产品数据吗？此操作不可撤销！')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/clear-products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    // 清空成功后刷新产品列表和数据概览
+                    loadProductList();
+                    loadStatsOverview();
+                } else {
+                    alert('清空失败: ' + result.message);
+                }
+            } catch (error) {
+                alert('请求失败: ' + error);
+            }
+        }
+
+        // 生成报告
+        async function generateReport() {
+            try {
+                const response = await fetch('/api/generate-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        report_type: 'manual'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('报告生成任务已启动！请稍后查看报告列表。');
+                    setTimeout(loadReports, 2000); // 2秒后刷新报告列表
+                } else {
+                    alert('生成失败: ' + result.message);
+                }
+            } catch (error) {
+                alert('请求失败: ' + error);
+            }
+        }
+
+        // 测试邮件发送
+        async function testEmail() {
+            alert('邮件功能测试中...（当前使用模拟邮件发送）');
+        }
+
+        // 刷新数据
+        async function refreshStats() {
+            await loadStatsOverview();
+            await loadReports();
+            await loadProductList();
+            alert('数据已刷新！');
+        }
+    </script>
+</body>
+</html>

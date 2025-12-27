@@ -1,4 +1,4 @@
-print( " 🚀 路径3 - 自动化系统开发（优化版） " )
+print("🚀 路径3 - 自动化系统开发（优化版）")
 
 # ===== 缓存优化添加 =====
 import functools
@@ -85,19 +85,19 @@ try:
     from apscheduler.schedulers.background import BackgroundScheduler
     from apscheduler.triggers.cron import CronTrigger
     APSCHEDULER_AVAILABLE = True
-    print(“✅ APScheduler 可用”)
+    print("✅ APScheduler 可用")
 except ImportError:
     APSCHEDULER_AVAILABLE = False
-    print(“⚠️  APScheduler 不可用，使用简单定时器”)
+    print("⚠️  APScheduler 不可用，使用简单定时器")
 
 # 尝试导入flask-mail，如果失败使用备用方案
 try:
     from flask_mail import Mail, Message
     FLASK_MAIL_AVAILABLE = True
-    print(“✅ Flask-Mail 可用”)
+    print("✅ Flask-Mail 可用")
 except ImportError:
     FLASK_MAIL_AVAILABLE = False
-    print(“⚠️  Flask-Mail 不可用，使用模拟邮件发送”)
+    print("⚠️  Flask-Mail 不可用，使用模拟邮件发送")
 
 # 配置中文字体
 try:
@@ -106,11 +106,11 @@ try:
         font_prop = font_manager.FontProperties(fname=font_path)
         plt.rcParams['font.sans-serif'] = [font_prop.get_name(), 'DejaVu Sans']
         plt.rcParams['axes.unicode_minus'] = False
-        print(“✅ 中文字体设置成功”)
+        print("✅ 中文字体设置成功")
 except Exception as e:
-    print(f“⚠️  字体设置失败: {e}”)
+    print(f"⚠️  字体设置失败: {e}")
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates_automation_optimized')
 
 # 生产环境配置
 class Config:
@@ -245,7 +245,7 @@ class SimpleScheduler:
     
     def add_job(self, func, trigger_type='interval', **kwargs):
         """添加定时任务"""
-        task_id = f“task_{len(self.tasks) + 1}”
+        task_id = f"task_{len(self.tasks) + 1}"
         task = {
             'id': task_id,
             'func': func,
@@ -283,7 +283,7 @@ class SimpleScheduler:
         self.thread = threading.Thread(target=self._run_scheduler)
         self.thread.daemon = True
         self.thread.start()
-        print(“✅ 优化版定时器启动”)
+        print("✅ 优化版定时器启动")
     
     def _run_scheduler(self):
         """运行调度器"""
@@ -312,7 +312,7 @@ class SimpleScheduler:
                         self._calculate_next_run(task)
                         
                     except Exception as e:
-                        app.logger.error(f“定时任务执行失败: {e}”)
+                        app.logger.error(f"定时任务执行失败: {e}")
                         self.task_history.append({
                             'task_id': task['id'],
                             'executed_at': now,
@@ -349,10 +349,10 @@ class SimpleScheduler:
 # 初始化任务调度器
 if APSCHEDULER_AVAILABLE:
     scheduler = BackgroundScheduler()
-    print(“✅ 使用APScheduler”)
+    print("✅ 使用APScheduler")
 else:
     scheduler = SimpleScheduler()
-    print(“✅ 使用优化版定时器”)
+    print("✅ 使用优化版定时器")
 
 class AutomationProductAnalyzer:
     def __init__(self, products):
@@ -499,22 +499,22 @@ class EmailService:
         try:
             # 如果没有配置真实邮箱或Flask-Mail不可用，使用模拟发送
             if not FLASK_MAIL_AVAILABLE or not app.config['MAIL_USERNAME'] or app.config['MAIL_USERNAME'] == 'test@example.com':
-                self.app_logger.info(f“模拟发送报告邮件给: {user_email}”)
-                print(f“📧 模拟发送邮件到: {user_email}”)
-                print(f“   主题: 选品分析报告 - {datetime.now(timezone.utc).strftime('%Y年%m月%d日')}”)
-                print(f“   内容: {report_data['total_products']}个产品, 平均ROI: {report_data['avg_roi']}%”)
-                print(f“   高价值产品: {report_data['high_value_count']}个, 总收益潜力: ${report_data['total_revenue']:.2f}”)
+                self.app_logger.info(f"模拟发送报告邮件给: {user_email}")
+                print(f"📧 模拟发送邮件到: {user_email}")
+                print(f"   主题: 选品分析报告 - {datetime.now(timezone.utc).strftime('%Y年%m月%d日')}")
+                print(f"   内容: {report_data['total_products']}个产品, 平均ROI: {report_data['avg_roi']}%")
+                print(f"   高价值产品: {report_data['high_value_count']}个, 总收益潜力: ${report_data['total_revenue']:.2f}")
                 return True
             
             # 如果Flask-Mail可用且配置了真实邮箱，则实际发送
             if FLASK_MAIL_AVAILABLE:
-                subject = f“📊 选品分析报告 - {datetime.now(timezone.utc).strftime('%Y年%m月%d日')}”
+                subject = f"📊 选品分析报告 - {datetime.now(timezone.utc).strftime('%Y年%m月%d日')}"
                 
-                html_body = f“”“
+                html_body = f"""
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <meta charset=“utf-8”>
+                    <meta charset="utf-8">
                     <style>
                         body {{ font-family: 'Microsoft YaHei', Arial, sans-serif; color: #333; }}
                         .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
@@ -526,39 +526,39 @@ class EmailService:
                     </style>
                 </head>
                 <body>
-                    <div class=“container”>
-                        <div class=“header”>
+                    <div class="container">
+                        <div class="header">
                             <h1>🚀 选品分析报告</h1>
                             <p>个性化数据分析 · 自动生成</p>
                         </div>
-                        <div class=“content”>
+                        <div class="content">
                             <h2>亲爱的 {username}，</h2>
                             <p>这是您的选品分析系统自动生成的报告：</p>
                             
-                            <div class=“stat-card”>
+                            <div class="stat-card">
                                 <h3>📈 核心数据统计</h3>
-                                <p>总产品数量: <span class=“highlight”>{report_data['total_products']}</span></p>
-                                <p>平均ROI率: <span class=“highlight”>{report_data['avg_roi']}%</span></p>
-                                <p>平均单件利润: <span class=“highlight”>${report_data['avg_profit']}</span></p>
-                                <p>高价值产品: <span class=“highlight”>{report_data['high_value_count']}</span> 个</p>
+                                <p>总产品数量: <span class="highlight">{report_data['total_products']}</span></p>
+                                <p>平均ROI率: <span class="highlight">{report_data['avg_roi']}%</span></p>
+                                <p>平均单件利润: <span class="highlight">${report_data['avg_profit']}</span></p>
+                                <p>高价值产品: <span class="highlight">{report_data['high_value_count']}</span> 个</p>
                             </div>
                             
-                            <div class=“stat-card”>
+                            <div class="stat-card">
                                 <h3>🏆 最佳表现产品</h3>
-                                <p>最佳ROI产品: <span class=“highlight”>{report_data['top_product']}</span></p>
+                                <p>最佳ROI产品: <span class="highlight">{report_data['top_product']}</span></p>
                             </div>
                             
                             <p>登录系统查看更多详细分析：</p>
-                            <p><a href=“http://localhost:5009” style=“background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;”>查看完整报告</a></p>
+                            <p><a href="http://localhost:5009" style="background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">查看完整报告</a></p>
                         </div>
-                        <div class=“footer”>
+                        <div class="footer">
                             <p>此邮件由选品分析系统自动发送，请勿回复。</p>
                             <p>发送时间: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}</p>
                         </div>
                     </div>
                 </body>
                 </html>
-                ”“”
+                """
                 
                 msg = Message(
                     subject=subject,
@@ -567,14 +567,14 @@ class EmailService:
                 )
                 
                 mail.send(msg)
-                self.app_logger.info(f“报告邮件发送成功: {user_email}”)
+                self.app_logger.info(f"报告邮件发送成功: {user_email}")
                 return True
             
             return False
             
         except Exception as e:
-            self.app_logger.error(f“发送邮件失败: {e}”)
-            print(f“❌ 邮件发送失败: {e}”)
+            self.app_logger.error(f"发送邮件失败: {e}")
+            print(f"❌ 邮件发送失败: {e}")
             return False
 
 # 定时任务函数
@@ -582,8 +582,8 @@ def generate_daily_reports():
     """生成每日报告"""
     with app.app_context():
         try:
-            app.logger.info(“开始生成每日报告...”)
-            print(“🔄 生成每日报告中...”)
+            app.logger.info("开始生成每日报告...")
+            print("🔄 生成每日报告中...")
             
             users = User.query.filter_by(is_active=True, receive_notifications=True).all()
             email_service = EmailService()
@@ -607,27 +607,27 @@ def generate_daily_reports():
                 db.session.commit()
                 
                 # 发送邮件
-                if email_service.send_report_email(user.email, user.username, report_data, “”):
+                if email_service.send_report_email(user.email, user.username, report_data, ""):
                     report.sent_via_email = True
                     report.email_sent_at = datetime.now(timezone.utc)
                     db.session.commit()
                 
-                app.logger.info(f“用户 {user.username} 的每日报告生成完成”)
-                print(f“✅ {user.username} 的每日报告生成完成”)
+                app.logger.info(f"用户 {user.username} 的每日报告生成完成")
+                print(f"✅ {user.username} 的每日报告生成完成")
             
-            app.logger.info(“所有用户每日报告生成完成”)
-            print(“✅ 所有用户每日报告生成完成”)
+            app.logger.info("所有用户每日报告生成完成")
+            print("✅ 所有用户每日报告生成完成")
             
         except Exception as e:
-            app.logger.error(f“生成每日报告失败: {e}”)
-            print(f“❌ 生成每日报告失败: {e}”)
+            app.logger.error(f"生成每日报告失败: {e}")
+            print(f"❌ 生成每日报告失败: {e}")
 
 def generate_weekly_summary():
     """生成每周总结"""
     with app.app_context():
         try:
-            app.logger.info(“开始生成每周总结...”)
-            print(“🔄 生成每周总结中...”)
+            app.logger.info("开始生成每周总结...")
+            print("🔄 生成每周总结中...")
             
             users = User.query.filter_by(is_active=True, receive_notifications=True).all()
             email_service = EmailService()
@@ -657,25 +657,25 @@ def generate_weekly_summary():
                 db.session.commit()
                 
                 # 发送邮件
-                if email_service.send_report_email(user.email, user.username, report_data, “”):
+                if email_service.send_report_email(user.email, user.username, report_data, ""):
                     report.sent_via_email = True
                     report.email_sent_at = datetime.now(timezone.utc)
                     db.session.commit()
                 
-                app.logger.info(f“用户 {user.username} 的周报生成完成”)
-                print(f“✅ {user.username} 的周报生成完成”)
+                app.logger.info(f"用户 {user.username} 的周报生成完成")
+                print(f"✅ {user.username} 的周报生成完成")
             
-            app.logger.info(“所有用户周报生成完成”)
-            print(“✅ 所有用户周报生成完成”)
+            app.logger.info("所有用户周报生成完成")
+            print("✅ 所有用户周报生成完成")
             
         except Exception as e:
-            app.logger.error(f“生成周报失败: {e}”)
-            print(f“❌ 生成周报失败: {e}”)
+            app.logger.error(f"生成周报失败: {e}")
+            print(f"❌ 生成周报失败: {e}")
 
 def health_check_task():
     """健康检查任务"""
-    app.logger.info(“定时任务测试 - 系统运行正常”)
-    print(“💓 系统健康检查 - 运行正常”)
+    app.logger.info("定时任务测试 - 系统运行正常")
+    print("💓 系统健康检查 - 运行正常")
 
 # 注册定时任务
 def register_scheduled_tasks():
@@ -733,12 +733,12 @@ def register_scheduled_tasks():
             
             scheduler.start()
         
-        app.logger.info(“定时任务注册完成”)
-        print(“✅ 定时任务注册完成”)
+        app.logger.info("定时任务注册完成")
+        print("✅ 定时任务注册完成")
         
     except Exception as e:
-        app.logger.error(f“注册定时任务失败: {e}”)
-        print(f“❌ 注册定时任务失败: {e}”)
+        app.logger.error(f"注册定时任务失败: {e}")
+        print(f"❌ 注册定时任务失败: {e}")
 
 # 后台任务函数
 def background_generate_report(user_id, report_type):
@@ -750,8 +750,8 @@ def background_generate_report(user_id, report_type):
             if not user:
                 return
             
-            app.logger.info(f“后台生成 {report_type} 报告 for {user.username}”)
-            print(f“🔄 后台生成 {report_type} 报告 for {user.username}”)
+            app.logger.info(f"后台生成 {report_type} 报告 for {user.username}")
+            print(f"🔄 后台生成 {report_type} 报告 for {user.username}")
             
             user_products = Product.query.filter_by(user_id=user.id).all()
             if user_products:
@@ -769,17 +769,17 @@ def background_generate_report(user_id, report_type):
                 # 如果是手动生成的报告，也尝试发送邮件
                 if report_type == 'manual':
                     email_service = EmailService()
-                    if email_service.send_report_email(user.email, user.username, report_data, “”):
+                    if email_service.send_report_email(user.email, user.username, report_data, ""):
                         report.sent_via_email = True
                         report.email_sent_at = datetime.now(timezone.utc)
                         db.session.commit()
                 
-                app.logger.info(f“后台报告生成完成: {user.username}”)
-                print(f“✅ 后台报告生成完成: {user.username}”)
+                app.logger.info(f"后台报告生成完成: {user.username}")
+                print(f"✅ 后台报告生成完成: {user.username}")
             
         except Exception as e:
-            app.logger.error(f“后台生成报告失败: {e}”)
-            print(f“❌ 后台生成报告失败: {e}”)
+            app.logger.error(f"后台生成报告失败: {e}")
+            print(f"❌ 后台生成报告失败: {e}")
 
 # ========== 新增的CSV导入功能 ==========
 
@@ -788,6 +788,12 @@ def background_generate_report(user_id, report_type):
 def api_import_csv():
     """导入CSV文件数据"""
     try:
+        # 新增的清洗函数
+        def clean_price(price_str):
+            if isinstance(price_str, str):
+                return price_str.replace('$', '').replace(',', '').strip()
+            return price_str
+
         # 获取上传的文件
         if 'csv_file' not in request.files:
             return jsonify({'success': False, 'message': '没有选择文件'})
@@ -829,12 +835,12 @@ def api_import_csv():
                 product = Product(
                     name=row['Product Name'],
                     category=row.get('Category', '未知类别'),
-                    current_price=float(row['Price']),
-                    estimated_cost=float(row['Price']) * 0.3,  # 假设成本是价格的30%
+                    current_price=float(clean_price(row['Price'])),
+                    estimated_cost=float(clean_price(row['Price'])) * 0.3,# 假设成本是价格的30%
                     monthly_sales=int(row['Units Sold (Monthly)']),
                     competition_level='中',  # 默认值
                     review_rating=4.0,  # 默认值
-                    product_url=f“https://www.amazon.com/dp/{row['ASIN']}” if pd.notna(row['ASIN']) else '',
+                    product_url=f"https://www.amazon.com/dp/{row['ASIN']}" if pd.notna(row['ASIN']) else '',
                     user_id=session['user_id']
                 )
                 
@@ -842,12 +848,12 @@ def api_import_csv():
                 imported_count += 1
                 
             except Exception as e:
-                app.logger.error(f“导入产品失败 (行 {index+3}): {e}”)
+                app.logger.error(f"导入产品失败 (行 {index+3}): {e}")
                 continue
         
         db.session.commit()
         
-        app.logger.info(f“用户 {session['username']} 导入 {imported_count} 个产品”)
+        app.logger.info(f"用户 {session['username']} 导入 {imported_count} 个产品")
         return jsonify({
             'success': True, 
             'message': f'成功导入 {imported_count} 个产品',
@@ -855,7 +861,7 @@ def api_import_csv():
         })
         
     except Exception as e:
-        app.logger.error(f“导入CSV失败: {e}”)
+        app.logger.error(f"导入CSV失败: {e}")
         return jsonify({'success': False, 'message': f'导入失败: {str(e)}'})
 
 @app.route('/api/clear-products', methods=['POST'])
@@ -866,14 +872,14 @@ def api_clear_products():
         deleted_count = Product.query.filter_by(user_id=session['user_id']).delete()
         db.session.commit()
         
-        app.logger.info(f“用户 {session['username']} 清空了 {deleted_count} 个产品”)
+        app.logger.info(f"用户 {session['username']} 清空了 {deleted_count} 个产品")
         return jsonify({
             'success': True, 
             'message': f'已清空 {deleted_count} 个产品'
         })
         
     except Exception as e:
-        app.logger.error(f“清空产品失败: {e}”)
+        app.logger.error(f"清空产品失败: {e}")
         return jsonify({'success': False, 'message': f'清空失败: {str(e)}'})
 
 # ========== 路由定义 ==========
@@ -950,7 +956,7 @@ def dashboard():
     analyzer = AutomationProductAnalyzer(user_products)
     stats = analyzer.get_detailed_stats()
     
-    app.logger.info(f'用户访问仪表板: {session[“username”]}')
+    app.logger.info(f'用户访问仪表板: {session["username"]}')
     return render_template('dashboard_automation_optimized.html', 
                          username=session.get('username'),
                          product_count=product_count,
@@ -975,11 +981,11 @@ def api_generate_report():
         # 在后台生成报告
         executor.submit(background_generate_report, session['user_id'], report_type)
         
-        app.logger.info(f“用户 {session['username']} 请求生成 {report_type} 报告”)
+        app.logger.info(f"用户 {session['username']} 请求生成 {report_type} 报告")
         return jsonify({'success': True, 'message': '报告生成任务已启动，请稍后查看'})
         
     except Exception as e:
-        app.logger.error(f“生成报告失败: {e}”)
+        app.logger.error(f"生成报告失败: {e}")
         return jsonify({'success': False, 'message': f'生成失败: {str(e)}'})
 
 @app.route('/api/reports')
@@ -997,13 +1003,13 @@ def api_reports():
                 'report_type': report.report_type,
                 'generated_at': report.generated_at.strftime('%Y-%m-%d %H:%M'),
                 'sent_via_email': report.sent_via_email,
-                'summary': f“{report_data.get('total_products', 0)}个产品, 平均ROI: {report_data.get('avg_roi', 0)}%”
+                'summary': f"{report_data.get('total_products', 0)}个产品, 平均ROI: {report_data.get('avg_roi', 0)}%"
             })
         
         return jsonify({'reports': reports_data})
         
     except Exception as e:
-        app.logger.error(f“获取报告列表失败: {e}”)
+        app.logger.error(f"获取报告列表失败: {e}")
         return jsonify({'reports': []})
 
 @app.route('/api/system/status')
@@ -1019,7 +1025,7 @@ def api_system_status():
                 jobs.append({
                     'id': job.id,
                     'name': job.name,
-                    'next_run': job.next_run_time.strftime('%Y-%m-%d %H:%M:%S') if job.next_run_time else '未知'
+                    'next_run': job.next_run_time.strftime('%Y-%m-d %H:%M:%S') if job.next_run_time else '未知'
                 })
         else:
             scheduler_status = 'SimpleScheduler'
@@ -1037,7 +1043,7 @@ def api_system_status():
         return jsonify(system_info)
         
     except Exception as e:
-        app.logger.error(f“获取系统状态失败: {e}”)
+        app.logger.error(f"获取系统状态失败: {e}")
         return jsonify({'status': 'error', 'message': str(e)})
 
 @app.route('/api/products/overview')
@@ -1075,7 +1081,7 @@ def api_products_overview():
         return jsonify(overview)
         
     except Exception as e:
-        app.logger.error(f“获取产品概览失败: {e}”)
+        app.logger.error(f"获取产品概览失败: {e}")
         return jsonify({'error': str(e)})
 
 # 其他产品管理路由
@@ -1092,7 +1098,7 @@ def api_products():
         product_dict['comprehensive_score'] = analyzer.calculate_comprehensive_score(product_dict)
         products_data.append(product_dict)
     
-    app.logger.info(f'产品数据查询: 用户={session[“username”]}, 结果数={len(products_data)}')
+    app.logger.info(f'产品数据查询: 用户={session["username"]}, 结果数={len(products_data)}')
     return jsonify({'products': products_data})
 
 @app.route('/add_product', methods=['POST'])
@@ -1123,7 +1129,7 @@ def add_product():
         db.session.add(product)
         db.session.commit()
         
-        app.logger.info(f'产品添加成功: {name}, 用户: {session[“username”]}')
+        app.logger.info(f'产品添加成功: {name}, 用户: {session["username"]}')
         return jsonify({'success': True, 'message': '产品添加成功！'})
         
     except Exception as e:
@@ -1147,56 +1153,56 @@ def create_optimized_templates():
     # 登录页面（保持不变）
     login_html = '''
 <!DOCTYPE html>
-<html lang=“zh-CN”>
+<html lang="zh-CN">
 <head>
-    <meta charset=“UTF-8”>
-    <meta name=“viewport” content=“width=device-width, initial-scale=1.0”>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录 - 自动化选品系统</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {{ 
+        body { 
             font-family: 'Microsoft YaHei', Arial, sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-        }}
-        .login-container {{
+        }
+        .login-container {
             background: white;
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 400px;
-        }}
-        h1 {{
+        }
+        h1 {
             text-align: center;
             margin-bottom: 30px;
             color: #2c3e50;
-        }}
-        .form-group {{
+        }
+        .form-group {
             margin-bottom: 20px;
-        }}
-        label {{
+        }
+        label {
             display: block;
             margin-bottom: 8px;
             color: #34495e;
             font-weight: 600;
-        }}
-        input {{
+        }
+        input {
             width: 100%;
             padding: 12px;
             border: 2px solid #ecf0f1;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease;
-        }}
-        input:focus {{
+        }
+        input:focus {
             outline: none;
             border-color: #3498db;
-        }}
-        .btn {{
+        }
+        .btn {
             width: 100%;
             padding: 12px;
             background: linear-gradient(135deg, #3498db, #2980b9);
@@ -1207,35 +1213,35 @@ def create_optimized_templates():
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease;
-        }}
-        .btn:hover {{
+        }
+        .btn:hover {
             transform: translateY(-2px);
-        }}
-        .register-link {{
+        }
+        .register-link {
             text-align: center;
             margin-top: 20px;
-        }}
-        .flash-messages {{
+        }
+        .flash-messages {
             margin-bottom: 20px;
-        }}
-        .alert {{
+        }
+        .alert {
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 10px;
-        }}
-        .alert-success {{ background: #d4edda; color: #155724; }}
-        .alert-error {{ background: #f8d7da; color: #721c24; }}
+        }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
-    <div class=“login-container”>
+    <div class="login-container">
         <h1>🔐 用户登录</h1>
         
-        <div class=“flash-messages”>
+        <div class="flash-messages">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class=“alert alert-{{ 'success' if category == 'success' else 'error' }}”>
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -1243,23 +1249,23 @@ def create_optimized_templates():
             {% endwith %}
         </div>
         
-        <form method=“POST”>
-            <div class=“form-group”>
+        <form method="POST">
+            <div class="form-group">
                 <label>用户名:</label>
-                <input type=“text” name=“username” required>
+                <input type="text" name="username" required>
             </div>
-            <div class=“form-group”>
+            <div class="form-group">
                 <label>密码:</label>
-                <input type=“password” name=“password” required>
+                <input type="password" name="password" required>
             </div>
-            <button type=“submit” class=“btn”>登录</button>
+            <button type="submit" class="btn">登录</button>
         </form>
         
-        <div class=“register-link”>
-            <p>还没有账号？ <a href=“{{ url_for('register') }}”>立即注册</a></p>
+        <div class="register-link">
+            <p>还没有账号？ <a href="{{ url_for('register') }}">立即注册</a></p>
         </div>
         
-        <div style=“text-align: center; margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px;”>
+        <div style="text-align: center; margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
             <p><strong>演示账号:</strong> demo / demo123</p>
         </div>
     </div>
@@ -1270,56 +1276,56 @@ def create_optimized_templates():
     # 注册页面（保持不变）
     register_html = '''
 <!DOCTYPE html>
-<html lang=“zh-CN”>
+<html lang="zh-CN">
 <head>
-    <meta charset=“UTF-8”>
-    <meta name=“viewport” content=“width=device-width, initial-scale=1.0”>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注册 - 自动化选品系统</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {{ 
+        body { 
             font-family: 'Microsoft YaHei', Arial, sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-        }}
-        .register-container {{
+        }
+        .register-container {
             background: white;
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 400px;
-        }}
-        h1 {{
+        }
+        h1 {
             text-align: center;
             margin-bottom: 30px;
             color: #2c3e50;
-        }}
-        .form-group {{
+        }
+        .form-group {
             margin-bottom: 20px;
-        }}
-        label {{
+        }
+        label {
             display: block;
             margin-bottom: 8px;
             color: #34495e;
             font-weight: 600;
-        }}
-        input {{
+        }
+        input {
             width: 100%;
             padding: 12px;
             border: 2px solid #ecf0f1;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease;
-        }}
-        input:focus {{
+        }
+        input:focus {
             outline: none;
             border-color: #3498db;
-        }}
-        .btn {{
+        }
+        .btn {
             width: 100%;
             padding: 12px;
             background: linear-gradient(135deg, #27ae60, #229954);
@@ -1330,35 +1336,35 @@ def create_optimized_templates():
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease;
-        }}
-        .btn:hover {{
+        }
+        .btn:hover {
             transform: translateY(-2px);
-        }}
-        .login-link {{
+        }
+        .login-link {
             text-align: center;
             margin-top: 20px;
-        }}
-        .flash-messages {{
+        }
+        .flash-messages {
             margin-bottom: 20px;
-        }}
-        .alert {{
+        }
+        .alert {
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 10px;
-        }}
-        .alert-success {{ background: #d4edda; color: #155724; }}
-        .alert-error {{ background: #f8d7da; color: #721c24; }}
+        }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
-    <div class=“register-container”>
+    <div class="register-container">
         <h1>📝 用户注册</h1>
         
-        <div class=“flash-messages”>
+        <div class="flash-messages">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class=“alert alert-{{ 'success' if category == 'success' else 'error' }}”>
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -1366,28 +1372,28 @@ def create_optimized_templates():
             {% endwith %}
         </div>
         
-        <form method=“POST”>
-            <div class=“form-group”>
+        <form method="POST">
+            <div class="form-group">
                 <label>用户名:</label>
-                <input type=“text” name=“username” required>
+                <input type="text" name="username" required>
             </div>
-            <div class=“form-group”>
+            <div class="form-group">
                 <label>邮箱:</label>
-                <input type=“email” name=“email” required>
+                <input type="email" name="email" required>
             </div>
-            <div class=“form-group”>
+            <div class="form-group">
                 <label>密码:</label>
-                <input type=“password” name=“password” required>
+                <input type="password" name="password" required>
             </div>
-            <div class=“form-group”>
+            <div class="form-group">
                 <label>确认密码:</label>
-                <input type=“password” name=“confirm_password” required>
+                <input type="password" name="confirm_password" required>
             </div>
-            <button type=“submit” class=“btn”>注册</button>
+            <button type="submit" class="btn">注册</button>
         </form>
         
-        <div class=“login-link”>
-            <p>已有账号？ <a href=“{{ url_for('login') }}”>立即登录</a></p>
+        <div class="login-link">
+            <p>已有账号？ <a href="{{ url_for('login') }}">立即登录</a></p>
         </div>
     </div>
 </body>
@@ -1397,129 +1403,129 @@ def create_optimized_templates():
     # 优化版仪表板页面 - 已添加CSV导入功能
     dashboard_html = '''
 <!DOCTYPE html>
-<html lang=“zh-CN”>
+<html lang="zh-CN">
 <head>
-    <meta charset=“UTF-8”>
-    <meta name=“viewport” content=“width=device-width, initial-scale=1.0”>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>自动化选品分析系统 - 优化版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {{ 
+        body { 
             font-family: 'Microsoft YaHei', Arial, sans-serif; 
             background: #f5f6fa;
             min-height: 100vh;
-        }}
-        .container {{ 
+        }
+        .container { 
             max-width: 1600px; 
             margin: 0 auto; 
-        }}
-        .header {{ 
+        }
+        .header { 
             background: linear-gradient(135deg, #2c3e50, #3498db);
             color: white;
             padding: 30px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }}
-        .header h1 {{ 
+        }
+        .header h1 { 
             font-size: 2.5em; 
             margin-bottom: 5px;
-        }}
-        .header p {{
+        }
+        .header p {
             opacity: 0.9;
-        }}
-        .user-info {{
+        }
+        .user-info {
             text-align: right;
-        }}
-        .user-info a {{
+        }
+        .user-info a {
             color: white;
             text-decoration: none;
             margin-left: 15px;
             background: rgba(255,255,255,0.2);
             padding: 8px 15px;
             border-radius: 5px;
-        }}
-        .main-content {{
+        }
+        .main-content {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 20px;
             margin: 20px 40px;
-        }}
-        .automation-panel {{
+        }
+        .automation-panel {
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }}
-        .stats-panel {{
+        }
+        .stats-panel {
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }}
-        .panel-header {{
+        }
+        .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
             border-bottom: 2px solid #3498db;
             padding-bottom: 15px;
-        }}
-        .automation-grid {{
+        }
+        .automation-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
-        }}
-        .automation-card {{
+        }
+        .automation-card {
             background: #f8f9fa;
             padding: 25px;
             border-radius: 12px;
             border-left: 6px solid #3498db;
             transition: all 0.3s ease;
-        }}
-        .automation-card:hover {{
+        }
+        .automation-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }}
-        .card-header {{
+        }
+        .card-header {
             display: flex;
             align-items: center;
             margin-bottom: 15px;
-        }}
-        .card-icon {{
+        }
+        .card-icon {
             font-size: 2em;
             margin-right: 15px;
-        }}
-        .stats-grid {{
+        }
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-bottom: 20px;
-        }}
-        .stat-card {{
+        }
+        .stat-card {
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-        }}
-        .stat-card.warning {{
+        }
+        .stat-card.warning {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }}
-        .stat-card.success {{
+        }
+        .stat-card.success {
             background: linear-gradient(135deg, #27ae60, #229954);
-        }}
-        .stat-number {{
+        }
+        .stat-number {
             font-size: 2em;
             font-weight: bold;
             margin-bottom: 5px;
-        }}
-        .stat-label {{
+        }
+        .stat-label {
             font-size: 0.9em;
             opacity: 0.9;
-        }}
-        .btn {{
+        }
+        .btn {
             padding: 12px 25px;
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
@@ -1530,24 +1536,24 @@ def create_optimized_templates():
             font-weight: 600;
             transition: all 0.3s ease;
             margin: 5px;
-        }}
-        .btn:hover {{
+        }
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }}
-        .btn-success {{
+        }
+        .btn-success {
             background: linear-gradient(135deg, #27ae60, #229954);
-        }}
-        .btn-warning {{
+        }
+        .btn-warning {
             background: linear-gradient(135deg, #f39c12, #e67e22);
-        }}
-        .btn-danger {{
+        }
+        .btn-danger {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }}
-        .reports-section {{
+        }
+        .reports-section {
             margin-top: 30px;
-        }}
-        .report-item {{
+        }
+        .report-item {
             background: white;
             padding: 20px;
             margin: 10px 0;
@@ -1556,189 +1562,189 @@ def create_optimized_templates():
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }}
-        .system-status {{
+        }
+        .system-status {
             background: #2c3e50;
             color: white;
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
-        }}
-        .status-item {{
+        }
+        .status-item {
             margin: 10px 0;
             display: flex;
             justify-content: space-between;
-        }}
-        .task-list {{
+        }
+        .task-list {
             margin-top: 20px;
-        }}
-        .task-item {{
+        }
+        .task-item {
             background: #34495e;
             padding: 10px 15px;
             margin: 5px 0;
             border-radius: 5px;
             display: flex;
             justify-content: space-between;
-        }}
+        }
     </style>
 </head>
 <body>
-    <div class=“container”>
-        <div class=“header”>
+    <div class="container">
+        <div class="header">
             <div>
                 <h1>🤖 自动化选品分析系统 - 优化版</h1>
                 <p>智能报告 · 定时任务 · 邮件通知 · 实时监控</p>
             </div>
-            <div class=“user-info”>
+            <div class="user-info">
                 欢迎, <strong>{{ username }}</strong>! 
-                <a href=“{{ url_for('logout') }}”>退出登录</a>
+                <a href="{{ url_for('logout') }}">退出登录</a>
             </div>
         </div>
 
-        <div class=“main-content”>
-            <div class=“automation-panel”>
-                <div class=“panel-header”>
+        <div class="main-content">
+            <div class="automation-panel">
+                <div class="panel-header">
                     <h2>🔄 自动化任务控制</h2>
                     <div>
-                        <button class=“btn btn-success” onclick=“generateReport()”>📊 立即生成报告</button>
-                        <button class=“btn” onclick=“testEmail()”>📧 测试邮件发送</button>
+                        <button class="btn btn-success" onclick="generateReport()">📊 立即生成报告</button>
+                        <button class="btn" onclick="testEmail()">📧 测试邮件发送</button>
                     </div>
                 </div>
 
-                <div class=“automation-grid”>
-                    <div class=“automation-card”>
-                        <div class=“card-header”>
-                            <div class=“card-icon”>📅</div>
+                <div class="automation-grid">
+                    <div class="automation-card">
+                        <div class="card-header">
+                            <div class="card-icon">📅</div>
                             <h3>定时报告生成</h3>
                         </div>
                         <p>系统将在每天上午9点自动生成选品分析报告，并通过邮件发送给您。</p>
-                        <div class=“status-item”>
+                        <div class="status-item">
                             <span>任务状态:</span>
-                            <span style=“color: #2ecc71;”>运行中</span>
+                            <span style="color: #2ecc71;">运行中</span>
                         </div>
                     </div>
 
-                    <div class=“automation-card”>
-                        <div class=“card-header”>
-                            <div class=“card-icon”>📧</div>
+                    <div class="automation-card">
+                        <div class="card-header">
+                            <div class="card-icon">📧</div>
                             <h3>邮件通知系统</h3>
                         </div>
                         <p>自动将重要分析结果和报告发送到您的注册邮箱，确保您不错过任何商机。</p>
-                        <div class=“status-item”>
+                        <div class="status-item">
                             <span>当前模式:</span>
-                            <span id=“mailMode”>模拟发送</span>
+                            <span id="mailMode">模拟发送</span>
                         </div>
                     </div>
 
-                    <div class=“automation-card”>
-                        <div class=“card-header”>
-                            <div class=“card-icon”>⚡</div>
+                    <div class="automation-card">
+                        <div class="card-header">
+                            <div class="card-icon">⚡</div>
                             <h3>后台任务处理</h3>
                         </div>
                         <p>大数据分析和报告生成在后台异步执行，不会影响您的正常使用体验。</p>
-                        <div class=“status-item”>
+                        <div class="status-item">
                             <span>工作线程:</span>
-                            <span id=“workerCount”>4</span>
+                            <span id="workerCount">4</span>
                         </div>
                     </div>
                 </div>
 
-                <div class=“system-status”>
+                <div class="system-status">
                     <h3>🖥️ 系统状态监控</h3>
-                    <div id=“systemStatus”>
+                    <div id="systemStatus">
                         <!-- 系统状态动态加载 -->
                     </div>
-                    <div class=“task-list” id=“taskList”>
+                    <div class="task-list" id="taskList">
                         <!-- 定时任务列表动态加载 -->
                     </div>
                 </div>
 
                 <!-- 产品列表部分 - 已添加CSV导入功能 -->
-                <div class=“reports-section”>
+                <div class="reports-section">
                     <h3>📦 产品列表</h3>
                     
                     <!-- 添加导入功能 -->
-                    <div style=“margin-bottom: 20px; display: flex; gap: 10px;”>
-                        <input type=“file” id=“csvFile” accept=“.csv” style=“display: none;”>
-                        <button class=“btn btn-success” onclick=“document.getElementById('csvFile').click()”>
+                    <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                        <input type="file" id="csvFile" accept=".csv" style="display: none;">
+                        <button class="btn btn-success" onclick="document.getElementById('csvFile').click()">
                             📁 导入CSV文件
                         </button>
-                        <button class=“btn btn-danger” onclick=“clearProducts()”>
+                        <button class="btn btn-danger" onclick="clearProducts()">
                             🗑️ 清空产品
                         </button>
-                        <button class=“btn” onclick=“loadProductList()”>
+                        <button class="btn" onclick="loadProductList()">
                             🔄 刷新列表
                         </button>
                     </div>
                     
-                    <div id=“importStatus” style=“margin-bottom: 10px;”></div>
+                    <div id="importStatus" style="margin-bottom: 10px;"></div>
                     
-                    <div id=“productList” style=“background: white; border-radius: 8px; padding: 20px; margin-top: 15px;”>
-                        <table style=“width: 100%; border-collapse: collapse;”>
+                    <div id="productList" style="background: white; border-radius: 8px; padding: 20px; margin-top: 15px;">
+                        <table style="width: 100%; border-collapse: collapse;">
                             <thead>
-                                <tr style=“background: #f8f9fa;”>
-                                    <th style=“padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;”>产品名称</th>
-                                    <th style=“padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;”>类别</th>
-                                    <th style=“padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;”>价格</th>
-                                    <th style=“padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;”>月销量</th>
-                                    <th style=“padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;”>产品链接</th>
+                                <tr style="background: #f8f9fa;">
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">产品名称</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">类别</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">价格</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">月销量</th>
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">产品链接</th>
                                 </tr>
                             </thead>
-                            <tbody id=“productTableBody”>
+                            <tbody id="productTableBody">
                                 <!-- 产品数据将通过JavaScript动态加载 -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class=“reports-section”>
+                <div class="reports-section">
                     <h3>📋 最近生成的报告</h3>
-                    <div id=“reportsList”>
+                    <div id="reportsList">
                         <!-- 报告列表动态加载 -->
                     </div>
                 </div>
             </div>
 
-            <div class=“stats-panel”>
-                <div class=“panel-header”>
+            <div class="stats-panel">
+                <div class="panel-header">
                     <h2>📈 实时数据概览</h2>
                 </div>
                 
-                <div class=“stats-grid”>
-                    <div class=“stat-card”>
-                        <div class=“stat-number” id=“totalProducts”>0</div>
-                        <div class=“stat-label”>总产品数</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalProducts">0</div>
+                        <div class="stat-label">总产品数</div>
                     </div>
-                    <div class=“stat-card success”>
-                        <div class=“stat-number” id=“avgRoi”>0%</div>
-                        <div class=“stat-label”>平均ROI</div>
+                    <div class="stat-card success">
+                        <div class="stat-number" id="avgRoi">0%</div>
+                        <div class="stat-label">平均ROI</div>
                     </div>
-                    <div class=“stat-card”>
-                        <div class=“stat-number” id=“totalRevenue”>$0</div>
-                        <div class=“stat-label”>月收益潜力</div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRevenue">$0</div>
+                        <div class="stat-label">月收益潜力</div>
                     </div>
-                    <div class=“stat-card warning”>
-                        <div class=“stat-number” id=“highValueCount”>0</div>
-                        <div class=“stat-label”>高价值产品</div>
+                    <div class="stat-card warning">
+                        <div class="stat-number" id="highValueCount">0</div>
+                        <div class="stat-label">高价值产品</div>
                     </div>
                 </div>
 
-                <div style=“margin-top: 20px;”>
+                <div style="margin-top: 20px;">
                     <h3>🏆 最佳表现产品</h3>
-                    <div id=“topProduct” style=“padding: 15px; background: #f8f9fa; border-radius: 8px; margin-top: 10px;”>
+                    <div id="topProduct" style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin-top: 10px;">
                         加载中...
                     </div>
                 </div>
 
-                <div style=“margin-top: 20px;”>
+                <div style="margin-top: 20px;">
                     <h3>📊 性能指标</h3>
-                    <div id=“performanceMetrics” style=“padding: 15px; background: #f8f9fa; border-radius: 8px; margin-top: 10px;”>
+                    <div id="performanceMetrics" style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin-top: 10px;">
                         加载中...
                     </div>
                 </div>
 
-                <div style=“margin-top: 20px;”>
-                    <button class=“btn” onclick=“refreshStats()” style=“width: 100%;”>🔄 刷新数据</button>
+                <div style="margin-top: 20px;">
+                    <button class="btn" onclick="refreshStats()" style="width: 100%;">🔄 刷新数据</button>
                 </div>
             </div>
         </div>
@@ -1762,19 +1768,19 @@ def create_optimized_templates():
                 const data = await response.json();
                 
                 let statusHtml = `
-                    <div class=“status-item”>
+                    <div class="status-item">
                         <span>系统状态:</span>
-                        <span style=“color: #2ecc71;”>${data.status}</span>
+                        <span style="color: #2ecc71;">${data.status}</span>
                     </div>
-                    <div class=“status-item”>
+                    <div class="status-item">
                         <span>任务调度器:</span>
                         <span>${data.scheduler_type}</span>
                     </div>
-                    <div class=“status-item”>
+                    <div class="status-item">
                         <span>邮件服务:</span>
                         <span>${data.mail_service}</span>
                     </div>
-                    <div class=“status-item”>
+                    <div class="status-item">
                         <span>服务器时间:</span>
                         <span>${data.server_time}</span>
                     </div>
@@ -1790,7 +1796,7 @@ def create_optimized_templates():
                     let taskHtml = '<h4>📅 定时任务列表</h4>';
                     data.scheduled_jobs.forEach(job => {
                         taskHtml += `
-                            <div class=“task-item”>
+                            <div class="task-item">
                                 <span>${job.name || job.id}</span>
                                 <span>下次运行: ${job.next_run || '未知'}</span>
                             </div>
@@ -1814,7 +1820,7 @@ def create_optimized_templates():
                 if (data.reports && data.reports.length > 0) {
                     data.reports.forEach(report => {
                         reportsHtml += `
-                            <div class=“report-item”>
+                            <div class="report-item">
                                 <div>
                                     <strong>${report.report_type}报告</strong>
                                     <p>生成时间: ${report.generated_at}</p>
@@ -1857,12 +1863,12 @@ def create_optimized_templates():
                 // 更新最佳产品
                 document.getElementById('topProduct').innerHTML = `
                     <strong>${data.performance_metrics.top_product}</strong>
-                    <p style=“margin-top: 5px; color: #666;”>当前最佳ROI产品</p>
+                    <p style="margin-top: 5px; color: #666;">当前最佳ROI产品</p>
                 `;
                 
                 // 更新性能指标
                 document.getElementById('performanceMetrics').innerHTML = `
-                    <div style=“display: grid; grid-template-columns: 1fr 1fr; gap: 10px;”>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div>
                             <strong>利润潜力</strong>
                             <p>$${data.performance_metrics.profit_potential.toFixed(2)}</p>
@@ -1890,26 +1896,26 @@ def create_optimized_templates():
                     data.products.forEach(product => {
                         productHtml += `
                             <tr>
-                                <td style=“padding: 12px; border-bottom: 1px solid #dee2e6;”>${product.name}</td>
-                                <td style=“padding: 12px; border-bottom: 1px solid #dee2e6;”>${product.category}</td>
-                                <td style=“padding: 12px; border-bottom: 1px solid #dee2e6;”>¥${product.current_price}</td>
-                                <td style=“padding: 12px; border-bottom: 1px solid #dee2e6;”>${product.monthly_sales}</td>
-                                <td style=“padding: 12px; border-bottom: 1px solid #dee2e6;”>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${product.name}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${product.category}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">¥${product.current_price}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${product.monthly_sales}</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
                                     ${product.product_url ? 
-                                        `<a href=“${product.product_url}” target=“_blank” style=“color: #007bff; text-decoration: none;”>🔗 查看产品</a>` : 
-                                        '<span style=“color: #6c757d;”>-</span>'}
+                                        `<a href="${product.product_url}" target="_blank" style="color: #007bff; text-decoration: none;">🔗 查看产品</a>` : 
+                                        '<span style="color: #6c757d;">-</span>'}
                                 </td>
                             </tr>
                         `;
                     });
                 } else {
-                    productHtml = '<tr><td colspan=“5” style=“padding: 20px; text-align: center; color: #6c757d;”>暂无产品数据</td></tr>';
+                    productHtml = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #6c757d;">暂无产品数据</td></tr>';
                 }
                 
                 document.getElementById('productTableBody').innerHTML = productHtml;
             } catch (error) {
                 console.error('加载产品列表失败:', error);
-                document.getElementById('productTableBody').innerHTML = '<tr><td colspan=“5” style=“padding: 20px; text-align: center; color: #dc3545;”>加载失败</td></tr>';
+                document.getElementById('productTableBody').innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #dc3545;">加载失败</td></tr>';
             }
         }
 
@@ -1923,7 +1929,7 @@ def create_optimized_templates():
 
         async function importCSV(file) {
             const statusDiv = document.getElementById('importStatus');
-            statusDiv.innerHTML = '<div style=“color: #007bff;”>🔄 正在导入CSV文件...</div>';
+            statusDiv.innerHTML = '<div style="color: #007bff;">🔄 正在导入CSV文件...</div>';
             
             const formData = new FormData();
             formData.append('csv_file', file);
@@ -1937,17 +1943,17 @@ def create_optimized_templates():
                 const result = await response.json();
                 
                 if (result.success) {
-                    statusDiv.innerHTML = `<div style=“color: #28a745;”>✅ ${result.message}</div>`;
+                    statusDiv.innerHTML = `<div style="color: #28a745;">✅ ${result.message}</div>`;
                     // 导入成功后刷新产品列表
                     setTimeout(() => {
                         loadProductList();
                         loadStatsOverview();
                     }, 1000);
                 } else {
-                    statusDiv.innerHTML = `<div style=“color: #dc3545;”>❌ ${result.message}</div>`;
+                    statusDiv.innerHTML = `<div style="color: #dc3545;">❌ ${result.message}</div>`;
                 }
             } catch (error) {
-                statusDiv.innerHTML = `<div style=“color: #dc3545;”>❌ 导入失败: ${error}</div>`;
+                statusDiv.innerHTML = `<div style="color: #dc3545;">❌ 导入失败: ${error}</div>`;
             }
             
             // 清空文件输入，允许重复选择同一文件
@@ -2036,7 +2042,7 @@ def create_optimized_templates():
     with open(os.path.join(templates_dir, 'dashboard_automation_optimized.html'), 'w', encoding='utf-8') as f:
         f.write(dashboard_html)
     
-    print(f“✅ 优化版模板创建完成: {templates_dir}”)
+    print(f"✅ 优化版模板创建完成: {templates_dir}")
 
 # 添加示例数据
 def add_sample_data():
@@ -2065,7 +2071,16 @@ def add_sample_data():
                 db.session.add(product)
             
             db.session.commit()
-            print(“✅ 示例数据添加完成”)
+            print("✅ 示例数据添加完成")
+
+# ！！！添加以下健康检查路由！！！
+@app.route('/health', methods=['GET'])
+def health_check():
+    """
+    极简健康检查端点，不依赖数据库、邮件等任何外部服务。
+    仅用于确认Flask应用进程本身是否存活且能响应请求。
+    """
+    return {'status': 'healthy', 'service': 'Automation System', 'timestamp': datetime.datetime.utcnow().isoformat()}, 200
 
 if __name__ == '__main__':
     # 设置日志
@@ -2083,29 +2098,29 @@ if __name__ == '__main__':
     # 设置模板文件夹
     app.template_folder = 'templates_automation_optimized'
     
-    print(“\n🚀 自动化选品分析系统（优化版）启动成功！”)
-    print(“📍 访问地址: http://127.0.0.1:5010”)
-    print(“🛠️  优化内容:”)
-    print(“   • ✅ 修复SQLAlchemy警告 (Query.get() → Session.get())”)
-    print(“   • ✅ 增强邮件状态跟踪”)
-    print(“   • ✅ 添加实时产品数据概览”)
-    print(“   • ✅ 改进定时任务管理系统”)
-    print(“   • ✅ 增强数据分析功能”)
-    print(“   • ✅ 新增CSV导入功能”)
-    print(“🤖 新增功能:”)
-    print(“   • 📊 实时数据监控面板”)
-    print(“   • ⚡ 定时任务状态显示”)
-    print(“   • 📈 增强的性能指标”)
-    print(“   • 🔄 自动数据刷新”)
-    print(“   • 📁 CSV文件导入”)
-    print(“   • 🗑️ 一键清空产品”)
-    print(“📋 登录信息: demo / demo123”)
+    print("\n🚀 自动化选品分析系统（优化版）启动成功！")
+    print("📍 访问地址: http://127.0.0.1:5010")
+    print("🛠️  优化内容:")
+    print("   • ✅ 修复SQLAlchemy警告 (Query.get() → Session.get())")
+    print("   • ✅ 增强邮件状态跟踪")
+    print("   • ✅ 添加实时产品数据概览")
+    print("   • ✅ 改进定时任务管理系统")
+    print("   • ✅ 增强数据分析功能")
+    print("   • ✅ 新增CSV导入功能")
+    print("🤖 新增功能:")
+    print("   • 📊 实时数据监控面板")
+    print("   • ⚡ 定时任务状态显示")
+    print("   • 📈 增强的性能指标")
+    print("   • 🔄 自动数据刷新")
+    print("   • 📁 CSV文件导入")
+    print("   • 🗑️ 一键清空产品")
+    print("📋 登录信息: demo / demo123")
     
     try:
         app.run(debug=True, host='127.0.0.1', port=5010, use_reloader=False)
     except KeyboardInterrupt:
-        print(“\n🛑 正在关闭系统...”)
+        print("\n🛑 正在关闭系统...")
         if hasattr(scheduler, 'shutdown'):
             scheduler.shutdown()
         executor.shutdown(wait=False)
-        print(“✅ 系统已安全关闭”)
+        print("✅ 系统已安全关闭")
